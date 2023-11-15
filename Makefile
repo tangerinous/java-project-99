@@ -36,10 +36,10 @@ lint:
 	gradle checkstyleTest checkCode
 
 code-start:
-    make/app -C code start
+	make/app -C code start
 
 check-updates:
-    gradle dependencyUpdates
+	gradle dependencyUpdates
 
 deploy:
-    git subtree push --prefix code heroku main
+	git subtree push --prefix code heroku main
