@@ -1,0 +1,27 @@
+---
+
+version: "3"
+
+services:
+  db:
+    image: postgres:13.4-alpine
+    environment:
+      POSTGRES_DB: appdb
+      POSTGRES_PASSWORD: password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    volumes:
+      - .:/project
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: make test lint
+    environment:
+      JDBC_DATABASE_URL: jdbc:postgresql://db:5432/appdb?password=password&user=postgres
+      ROLLBAR_TOKEN: some_secret_token
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
