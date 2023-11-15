@@ -26,7 +26,7 @@ compose-down:
 	docker-compose down -v --remove-orphans
 
 setup:
-	cd code && ./gradlew build installDist
+	cd app && ./gradlew build installDist
 	gradle compileTest
 
 test:
@@ -36,7 +36,7 @@ lint:
 	gradle checkCode
 
 code-start:
-	make -C code start
+	make -C app start
 
 check-updates:
 	gradle dependencyUpdates
