@@ -36,7 +36,7 @@ lint:
 	gradle checkCode
 
 code-start:
-	make -C code start
+	make -C app start
 
 check-updates:
 	gradle dependencyUpdates
