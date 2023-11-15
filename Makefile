@@ -49,3 +49,6 @@ deploy:
 compose-production-run-app:
 	docker-compose -p java_l5_task_manager_project_ru-production -f docker-compose.production.yml build
 	docker-compose -p java_l5_task_manager_project_ru-production -f docker-compose.production.yml up
+
+run-dist:
+	./gradlew clean install
