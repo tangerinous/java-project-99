@@ -28,6 +28,9 @@ compose-down:
 setup:
 	cd app && ./gradlew build installDist
 
+setup:
+	make -C app report
+
 test:
 	gradle test
 
