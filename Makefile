@@ -27,7 +27,6 @@ compose-down:
 
 setup:
 	cd app && ./gradlew build installDist
-	gradle compileTest
 
 test:
 	gradle test
