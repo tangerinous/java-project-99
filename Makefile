@@ -35,7 +35,7 @@ lint:
 	gradle checkstyleTest checkCode
 
 code-start:
-	make/app -C code start
+	make/app -C app start
 
 check-updates:
 	gradle dependencyUpdates
