@@ -27,6 +27,7 @@ compose-down:
 
 setup:
 	cd code/app && ./gradlew clean build
+	gradle clean compileTest
 
 test:
 	gradle test
@@ -35,7 +36,7 @@ lint:
 	gradle checkstyleTest checkCode
 
 code-start:
-	make/app -C app start
+	make/app -C code start
 
 check-updates:
 	gradle dependencyUpdates
