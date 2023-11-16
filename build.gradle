@@ -1,0 +1,56 @@
+plugins {
+    id 'java'
+    id 'checkstyle'
+    id 'com.adarshr.test-logger' version '3.1.0'
+    id 'com.github.ben-manes.versions' version '0.39.0'
+    id 'org.springframework.boot' version '3.1.1'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
+group = 'hexlet.project'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+compileJava {
+    options.release = 20
+}
+
+dependencies {
+    testImplementation(
+        'hexlet.code:app',
+        'org.assertj:assertj-core:3.21.0',
+        'org.skyscreamer:jsonassert:1.5.0',
+        'com.fasterxml.jackson.core:jackson-databind:2.13.1',
+        'org.springframework.boot:spring-boot-starter-test',
+        'org.springframework.boot:spring-boot-starter-data-jpa',
+        'org.springframework.boot:spring-boot-starter-web',
+        'org.springframework.boot:spring-boot-starter-actuator',
+        'org.springframework.boot:spring-boot-starter-validation',
+        'org.springframework.boot:spring-boot-starter-security'
+    )
+}
+
+test {
+    useJUnitPlatform()
+    failFast true
+}
+
+testlogger {
+    showStandardStreams true
+}
+
+checkstyle {
+    toolVersion '9.2'
+}
+
+task checkCode (type: Checkstyle) {
+    source '.'
+    include '**/*.java'
+    exclude '**/build/'
+    exclude '**/.gradle/'
+    exclude '**/tmp/'
+    classpath = files()
+}
