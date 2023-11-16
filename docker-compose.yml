@@ -12,7 +12,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   app:
-    build: .
+    build: ..
     volumes:
       - .:/project
       - /var/run/docker.sock:/var/run/docker.sock

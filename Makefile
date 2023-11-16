@@ -1,49 +1,32 @@
-ci:
-	docker-compose -f docker-compose.yml run app make setup
-	docker-compose -f docker-compose.yml up --abort-on-container-exit
+clean:
+	./gradlew clean
 
-compose-setup: compose-build compose-app-setup
+build:
+	./gradlew clean build
 
-compose-build:
-	docker-compose build
+start:
+	./gradlew bootRun --args='--spring.profiles.active=dev'
 
-compose-app-setup:
-	docker-compose run --rm app make setup
+start-prod:
+	./gradlew bootRun --args='--spring.profiles.active=prod'
 
-compose-bash:
-	docker-compose run --rm --service-ports app bash
+install:
+	./gradlew installDist
 
-compose-lint:
-	docker-compose run --rm app make lint
-
-compose-test:
-	docker-compose -f docker-compose.yml up --abort-on-container-exit
-
-compose:
-	docker-compose up
-
-compose-down:
-	docker-compose down -v --remove-orphans
-
-setup:
-	cd code && ./gradlew build installDist
-	gradle compileTest
-
-test:
-	gradle test
+start-dist:
+	./build/install/app/bin/app
 
 lint:
-	gradle checkCode
+	./gradlew checkstyleMain checkstyleTest
 
-code-start:
-	make -C code start
+test:
+	./gradlew test
+
+report:
+	./gradlew jacocoTestReport
 
 check-updates:
-	gradle dependencyUpdates
+	./gradlew dependencyUpdates
 
-deploy:
-	git subtree push --prefix code heroku main
 
-compose-production-run-app:
-	docker-compose -p java_l5_task_manager_project_ru-production -f docker-compose.production.yml build
-	docker-compose -p java_l5_task_manager_project_ru-production -f docker-compose.production.yml up
+.PHONY: build
