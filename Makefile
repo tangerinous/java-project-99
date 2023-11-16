@@ -26,20 +26,24 @@ compose-down:
 	docker-compose down -v --remove-orphans
 
 setup:
-	cd code/app && ./gradlew clean build
-	gradle clean compileTest
+	cd code && ./gradlew build installDist
+	gradle compileTest
 
 test:
 	gradle test
 
 lint:
-	gradle checkstyleTest checkCode
+	gradle checkCode
 
 code-start:
-	make/app -C code start
+	make -C code start
 
 check-updates:
 	gradle dependencyUpdates
 
 deploy:
 	git subtree push --prefix code heroku main
+
+compose-production-run-app:
+	docker-compose -p java_l5_task_manager_project_ru-production -f docker-compose.production.yml build
+	docker-compose -p java_l5_task_manager_project_ru-production -f docker-compose.production.yml up
