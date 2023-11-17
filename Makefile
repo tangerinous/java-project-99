@@ -30,7 +30,7 @@ setup:
 	gradle clean compileTest
 
 test:
-	gradle test
+	cd code/app && ./gradlew clean test
 
 lint:
 	gradle checkstyleTest checkCode
