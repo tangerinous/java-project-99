@@ -27,7 +27,6 @@ compose-down:
 
 setup:
 	cd code/app && ./gradlew clean build
-	gradle clean compileTest
 
 test:
 	cd code/app && ./gradlew clean test
