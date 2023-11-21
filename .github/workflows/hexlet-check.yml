@@ -17,7 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
+        env:
+          SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
       - name: Hexlet project check
         uses: hexlet/project-action@release
         env:
