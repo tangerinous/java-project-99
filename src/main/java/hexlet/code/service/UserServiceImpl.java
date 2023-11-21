@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
 
 @Service
 @Transactional
@@ -39,6 +41,7 @@ public class UserServiceImpl implements UserService {
         userToUpdate.setEmail(userDto.getEmail());
         userToUpdate.setFirstName(userDto.getFirstName());
         userToUpdate.setLastName(userDto.getLastName());
+        userToUpdate.setUpdatedAt(new Date());
         userToUpdate.setPassword(
              passwordEncoder.encode(
                 userDto.getPassword()

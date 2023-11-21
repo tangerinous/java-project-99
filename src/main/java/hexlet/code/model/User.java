@@ -49,6 +49,11 @@ public class User {
     @Temporal(TIMESTAMP)
     private Date createdAt;
 
+    @CreationTimestamp
+    @Temporal(TIMESTAMP)
+    @JsonIgnore
+    private Date updatedAt;
+
     public User(final Long id) {
         this.id = id;
     }
