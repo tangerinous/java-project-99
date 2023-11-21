@@ -12,6 +12,7 @@ build/
 *.log
 
 node/
+frontend/node_modules/
 
 bin/
 
