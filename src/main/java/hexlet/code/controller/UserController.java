@@ -9,9 +9,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.Operation;
+
 import java.util.List;
+import java.util.Random;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
 import static hexlet.code.controller.UserController.USER_CONTROLLER_PATH;
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -34,8 +39,8 @@ public class UserController {
     public static final String ID = "/{id}";
 
     private static final String ONLY_OWNER_BY_ID = """
-            @userRepository.findById(#id).get().getEmail() == authentication.name
-        """;
+                @userRepository.findById(#id).get().getEmail() == authentication.name
+            """;
 
     private final UserService userService;
     private final UserRepository userRepository;
@@ -49,7 +54,7 @@ public class UserController {
     }
 
     @ApiResponses(@ApiResponse(responseCode = "200", content =
-        @Content(schema = @Schema(implementation = User.class)))
+    @Content(schema = @Schema(implementation = User.class)))
     )
     @GetMapping
     public List<User> getAll() {
@@ -61,6 +66,8 @@ public class UserController {
     @ApiResponses(@ApiResponse(responseCode = "200"))
     @GetMapping(ID)
     public User getUserById(@PathVariable final Long id) {
+
+
         return userRepository.findById(id).get();
     }
 

@@ -1,20 +1,12 @@
 package hexlet.code.model;
 
-import java.util.Date;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+
+import java.util.Date;
 
 import static jakarta.persistence.GenerationType.AUTO;
 import static jakarta.persistence.TemporalType.TIMESTAMP;
@@ -36,6 +28,11 @@ public class TaskStatus {
     @Size(min = 3, max = 1_000)
     @Column(unique = true)
     private String name;
+
+    @NotBlank
+    @Size(min = 1, max = 1_000)
+    @Column(unique = true)
+    private String slug;
 
     @CreationTimestamp
     @Temporal(TIMESTAMP)
