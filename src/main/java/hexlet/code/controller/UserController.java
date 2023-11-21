@@ -11,11 +11,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.Operation;
 
 import java.util.List;
-import java.util.Random;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,8 +52,7 @@ public class UserController {
     }
 
     @ApiResponses(@ApiResponse(responseCode = "200", content =
-    @Content(schema = @Schema(implementation = User.class)))
-    )
+    @Content(schema = @Schema(implementation = User.class))))
     @GetMapping
     public List<User> getAll() {
         return userRepository.findAll()
