@@ -13,9 +13,11 @@ import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.utils.TestUtils;
+
 import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -158,6 +160,7 @@ public class TaskControllerIT {
 
         final TaskStatus taskStatus = taskStatusRepository.save(TaskStatus.builder()
                 .name("task status")
+                .slug("slug")
                 .build()
         );
 
@@ -194,6 +197,7 @@ public class TaskControllerIT {
 
         final TaskStatus taskStatus = taskStatusRepository.save(TaskStatus.builder()
                 .name("task status")
+                .slug("slug")
                 .build()
         );
 
@@ -229,6 +233,7 @@ public class TaskControllerIT {
 
         final TaskStatus taskStatus = taskStatusRepository.save(TaskStatus.builder()
                 .name("task status")
+                .slug("skug")
                 .build()
         );
 

@@ -7,7 +7,9 @@ import hexlet.code.dto.TaskStatusDto;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.utils.TestUtils;
+
 import java.util.List;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -76,7 +78,7 @@ public class TaskStatusControllerIT {
 
     @Test
     public void createNewStatus() throws Exception {
-        final TaskStatusDto statusToSave = new TaskStatusDto("test status");
+        final TaskStatusDto statusToSave = new TaskStatusDto("test status", "1");
 
         final var request = buildRequestForSave(statusToSave);
 
@@ -105,7 +107,7 @@ public class TaskStatusControllerIT {
     @Disabled("For now active only positive tests")
     @Test
     public void failToTwiceCreateSameStatus() throws Exception {
-        final TaskStatusDto statusToSave = new TaskStatusDto("test status");
+        final TaskStatusDto statusToSave = new TaskStatusDto("test status", "slug");
 
         final var request = buildRequestForSave(statusToSave);
 
@@ -117,7 +119,7 @@ public class TaskStatusControllerIT {
 
     @Test
     public void updateStatus() throws Exception {
-        final TaskStatusDto status = new TaskStatusDto("test status");
+        final TaskStatusDto status = new TaskStatusDto("test status", "slug");
 
         final var requestToSave = buildRequestForSave(status);
 
@@ -146,7 +148,7 @@ public class TaskStatusControllerIT {
     @Disabled("For now active only positive tests")
     @Test
     public void updateStatusFails() throws Exception {
-        final TaskStatusDto status = new TaskStatusDto("test status");
+        final TaskStatusDto status = new TaskStatusDto("test status", "slug");
 
         final var requestToSave = buildRequestForSave(status);
 
@@ -169,7 +171,7 @@ public class TaskStatusControllerIT {
 
     @Test
     public void deleteStatus() throws Exception {
-        final TaskStatusDto status = new TaskStatusDto("test status");
+        final TaskStatusDto status = new TaskStatusDto("test status", "slug");
 
         final var requestToSave = buildRequestForSave(status);
 

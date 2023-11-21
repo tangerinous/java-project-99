@@ -72,6 +72,7 @@ public class BaseExceptionHandler {
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public String generalExceptionHandler(Exception exception) {
+        exception.printStackTrace();
         return exception.getMessage();
     }
 }

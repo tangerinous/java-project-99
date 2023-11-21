@@ -57,6 +57,7 @@ public class TaskStatusController {
     public TaskStatus createNew(@RequestBody @Valid final TaskStatusDto dto) {
         return taskStatusRepository.save(TaskStatus.builder()
                 .name(dto.getName())
+                .slug(dto.getSlug())
                 .build()
         );
     }
