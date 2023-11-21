@@ -19,3 +19,9 @@ spring:
 logging:
   level:
     ROOT: INFO
+
+sentry:
+  dsn: https://4087d09b21d8d12ff23224f5ffcbb787@o4506266296451072.ingest.sentry.io/4506266351566848
+  # Set traces-sample-rate to 1.0 to capture 100% of transactions for performance monitoring.
+  # We recommend adjusting this value in production.
+  sentry.traces-sample-rate: 1.0

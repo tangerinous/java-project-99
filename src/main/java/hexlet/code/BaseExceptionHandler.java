@@ -2,6 +2,8 @@ package hexlet.code;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import io.sentry.Sentry;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -28,24 +30,28 @@ public class BaseExceptionHandler {
     @ResponseStatus(NOT_FOUND)
     @ExceptionHandler(NoSuchElementException.class)
     public String noSuchElementExceptionHandler(NoSuchElementException exception) {
+        Sentry.captureException(exception);
         return exception.getMessage();
     }
 
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler({HttpMessageNotReadableException.class})
     public String validationExceptionsHandler(Exception exception) {
+        Sentry.captureException(exception);
         return exception.getMessage();
     }
 
     @ResponseStatus(UNPROCESSABLE_ENTITY)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public List<ObjectError> validationExceptionsHandler(MethodArgumentNotValidException exception) {
+        Sentry.captureException(exception);
         return exception.getAllErrors();
     }
 
     @ResponseStatus(UNPROCESSABLE_ENTITY)
     @ExceptionHandler(DataIntegrityViolationException.class)
     public String validationExceptionsHandler(DataIntegrityViolationException exception) {
+        Sentry.captureException(exception);
         return exception.getCause()
                 .getCause()
                 .getMessage();
@@ -54,18 +60,21 @@ public class BaseExceptionHandler {
     @ResponseStatus(FORBIDDEN)
     @ExceptionHandler(AccessDeniedException.class)
     public String accessDeniedException(AccessDeniedException exception) {
+        Sentry.captureException(exception);
         return exception.getMessage();
     }
 
     @ResponseStatus(UNAUTHORIZED)
     @ExceptionHandler(BadCredentialsException.class)
     public String badCredentialsException(BadCredentialsException exception) {
+        Sentry.captureException(exception);
         return exception.getMessage();
     }
 
     @ResponseStatus(UNAUTHORIZED)
     @ExceptionHandler(UsernameNotFoundException.class)
     public String userNitFoundExceptionHandler(UsernameNotFoundException exception) {
+        Sentry.captureException(exception);
         return exception.getMessage();
     }
 
@@ -73,6 +82,7 @@ public class BaseExceptionHandler {
     @ExceptionHandler(Exception.class)
     public String generalExceptionHandler(Exception exception) {
         exception.printStackTrace();
+        Sentry.captureException(exception);
         return exception.getMessage();
     }
 }
