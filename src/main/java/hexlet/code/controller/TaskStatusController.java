@@ -31,7 +31,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RequestMapping("${base-url:/api}" + TASK_STATUS_CONTROLLER_PATH)
 public class TaskStatusController {
 
-    public static final String TASK_STATUS_CONTROLLER_PATH = "/statuses";
+    public static final String TASK_STATUS_CONTROLLER_PATH = "/task_statuses";
     public static final String ID = "/{id}";
 
 

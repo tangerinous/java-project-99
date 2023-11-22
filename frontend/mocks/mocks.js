@@ -37,7 +37,7 @@ const mockServer = (server, rest) => {
   server.use(
     rest.post('/api/login', mockSingin),
 
-    rest.post('/api/statuses', (_req, res, ctx) => {
+    rest.post('/api/task_statuses', (_req, res, ctx) => {
       const result = {
         ..._req.body,
         id: _.uniqueId('test_'),
@@ -45,18 +45,18 @@ const mockServer = (server, rest) => {
       };
       return res(ctx.status(200), ctx.json(result));
     }),
-    rest.get('/api/statuses', (_req, res, ctx) => {
+    rest.get('/api/task_statuses', (_req, res, ctx) => {
       const result = taskStatuses;
       return res(ctx.status(200), ctx.json(result));
     }),
 
-    rest.get('/api/statuses/:taskStatusId', (_req, res, ctx) => {
+    rest.get('/api/task_statuses/:taskStatusId', (_req, res, ctx) => {
       const { taskStatusId } = _req.params;
       const result = taskStatuses.find((status) => status.id.toString() === taskStatusId);
       return res(ctx.status(200), ctx.json(result));
     }),
 
-    rest.put('/api/statuses/:taskStatusId', (_req, res, ctx) => {
+    rest.put('/api/task_statuses/:taskStatusId', (_req, res, ctx) => {
       const { taskStatusId } = _req.params;
       const currentItem = taskStatuses.find((status) => status.id.toString() === taskStatusId);
       const result = {
@@ -65,7 +65,7 @@ const mockServer = (server, rest) => {
       };
       return res(ctx.status(200), ctx.json(result));
     }),
-    rest.delete('/api/statuses/:taskStatusId', (_req, res, ctx) => res(ctx.status(200))),
+    rest.delete('/api/task_statuses/:taskStatusId', (_req, res, ctx) => res(ctx.status(200))),
 
     rest.post('/api/labels', (_req, res, ctx) => {
       const result = {
