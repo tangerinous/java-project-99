@@ -182,7 +182,7 @@ public class LabelControllerIT {
         }).getId();
 
         utils.perform(delete(LABEL_CONTROLLER_PATH + ID, id), TEST_USERNAME)
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         assertFalse(labelRepository.existsById(id));
     }
