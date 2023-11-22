@@ -270,7 +270,7 @@ public class TaskControllerIT {
                 .build());
 
         utils.perform(delete(TASK_CONTROLLER_PATH + ID, task.getId()), TEST_USERNAME)
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         assertFalse(taskRepository.existsById(task.getId()));
 

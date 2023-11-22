@@ -180,7 +180,7 @@ public class UserControllerIT {
         final Long userId = userRepository.findByEmail(TEST_USERNAME).get().getId();
 
         utils.perform(delete(USER_CONTROLLER_PATH + ID, userId), TEST_USERNAME)
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         assertEquals(0, userRepository.count());
     }

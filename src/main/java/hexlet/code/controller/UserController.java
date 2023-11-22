@@ -14,6 +14,7 @@ import java.util.List;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,8 +78,9 @@ public class UserController {
 
     @DeleteMapping(ID)
     @PreAuthorize(ONLY_OWNER_BY_ID)
-    public void delete(@PathVariable final long id) {
+    public ResponseEntity delete(@PathVariable final long id) {
         userRepository.deleteById(id);
+        return ResponseEntity.status(204).build();
     }
 }
 

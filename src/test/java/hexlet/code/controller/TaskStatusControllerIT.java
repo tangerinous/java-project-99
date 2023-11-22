@@ -184,7 +184,7 @@ public class TaskStatusControllerIT {
         }).getId();
 
         utils.perform(delete(TASK_STATUS_CONTROLLER_PATH + ID, id), TEST_USERNAME)
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         assertFalse(taskStatusRepository.existsById(id));
     }
