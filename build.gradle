@@ -84,36 +84,25 @@ compileJava {
     options.encoding = 'UTF-8'
 }
 
-// Сборка фронтенда.
-// Выполняется только если ничего не изменилось.
-// *****************************************************************************
-frontend {
-    nodeVersion = '16.13.1'
- 	installScript = 'install'
- 	assembleScript = 'run build'
- 	packageJsonDirectory = file("${projectDir}/frontend")
-}
 
 def configFrontendTasks = {
- 	inputs.files(fileTree("$projectDir/frontend").exclude('build', 'node_modules'))
- 	outputs.dir("$buildDir/resources/main/static")
+	inputs.files(fileTree("$projectDir/frontend").exclude('build', 'node_modules'))
+	outputs.dir("$buildDir/resources/main/static")
 }
 
 assembleFrontend {
- 	configure configFrontendTasks
+	configure configFrontendTasks
 
- 	doLast {
- 		copy {
- 			from "$projectDir/frontend/build"
- 			into "$buildDir/resources/main/static"
- 		}
- 	}
+	doLast {
+		copy {
+			from "$projectDir/frontend/build"
+			into "$buildDir/resources/main/static"
+		}
+	}
 }
 
 installFrontend {
- 	configure configFrontendTasks
+	configure configFrontendTasks
 }
 
 processResources.dependsOn assembleFrontend
-// *****************************************************************************
-
