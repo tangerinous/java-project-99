@@ -3,6 +3,7 @@ package hexlet.code.controller;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import hexlet.code.dto.TaskDto;
+import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.service.TaskService;
@@ -28,6 +29,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 import static hexlet.code.controller.TaskController.TASK_CONTROLLER_PATH;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -53,11 +60,17 @@ public class TaskController {
         @Content(array = @ArraySchema(schema = @Schema(implementation = Task.class))))
     )
     @GetMapping
-    public Iterable<Task> getFilteredTasks(
+    public Iterable<TaskDto> getFilteredTasks(
             @Parameter(description = "Predicate based on query params")
             @QuerydslPredicate(root = Task.class) Predicate predicate) {
         BooleanBuilder builder = new BooleanBuilder();
-        return taskRepository.findAll(builder.and(predicate));
+        Iterable<Task> all = taskRepository.findAll(builder.and(predicate));
+        List<TaskDto> collect1 = StreamSupport.stream(all.spliterator(), false)
+                .map(t -> {
+                    Set<String> collect = t.getLabels().stream().map(Label::getName).collect(Collectors.toSet());
+                    return new TaskDto(t.getName(), t.getDescription(), t.getAssignee().getId(), t.getTaskStatus().getName(), collect);
+                }).collect(Collectors.toList());
+        return collect1;
     }
 
     @Operation(summary = "Get Task by Id")

@@ -5,7 +5,10 @@ import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
+import hexlet.code.repository.TaskStatusRepository;
+import hexlet.code.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,9 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final UserService userService;
+    private final TaskStatusRepository taskStatusRepository;
+    private final UserRepository userRepository;
+    private final LabelRepository labelRepository;
 
     @Override
     public Task createNewTask(final TaskDto dto) {
@@ -45,19 +51,18 @@ public class TaskServiceImpl implements TaskService {
 
     private Task fromDto(final TaskDto dto) {
         final User author = userService.getCurrentUser();
-        final User executor = Optional.ofNullable(dto.getExecutorId())
-                .map(User::new)
+        final User executor = userRepository.findById(dto.getAssigneeId()).orElse(null);
+
+        final TaskStatus taskStatus = taskStatusRepository.findBySlug(dto.getStatus())
                 .orElse(null);
 
-        final TaskStatus taskStatus = Optional.ofNullable(dto.getTaskStatusId())
-                .map(TaskStatus::new)
-                .orElse(null);
-
-        final Set<Label> labels = Optional.ofNullable(dto.getLabelIds())
+        final Set<Label> labels = Optional.ofNullable(dto.getLabels())
                 .orElse(Set.of())
                 .stream()
                 .filter(Objects::nonNull)
-                .map(Label::new)
+                .map(l-> labelRepository.findByName(l))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .collect(Collectors.toSet());
 
         return Task.builder()
@@ -65,8 +70,8 @@ public class TaskServiceImpl implements TaskService {
                 .assignee(executor)
                 .taskStatus(taskStatus)
                 .labels(labels)
-                .name(dto.getName())
-                .description(dto.getDescription())
+                .name(dto.getTitle())
+                .description(dto.getContent())
                 .build();
     }
 }
