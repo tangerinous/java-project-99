@@ -29,12 +29,12 @@ public class AuthController {
 
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
-                    loginDto.getEmail(),
+                    loginDto.getUsername(),
                     loginDto.getPassword())
 
         );
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(loginDto.getEmail());
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(loginDto.getUsername());
         final String token = jwtUtil.generateToken(userDetails);
         return token;
     }

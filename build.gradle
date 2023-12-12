@@ -83,15 +83,3 @@ compileJava {
     options.release = 20
     options.encoding = 'UTF-8'
 }
-
-
-def configFrontendTasks = {
-	inputs.files(fileTree("$projectDir/frontend").exclude('build', 'node_modules'))
-	outputs.dir("$buildDir/resources/main/static")
-}
-
-installFrontend {
-	configure configFrontendTasks
-}
-
-processResources.dependsOn assembleFrontend
