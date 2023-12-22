@@ -3,8 +3,11 @@ package hexlet.code.controller;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import hexlet.code.dto.TaskDto;
+import hexlet.code.dto.TaskQueryDto;
 import hexlet.code.model.Label;
+import hexlet.code.model.QTask;
 import hexlet.code.model.Task;
+import hexlet.code.model.User;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +19,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -49,34 +54,46 @@ public class TaskController {
     public static final String ID = "/{id}";
 
     private static final String ONLY_AUTHOR_BY_ID = """
-            @taskRepository.findById(#id).get().getAuthor().getEmail() == authentication.getName()
-        """;
+                @taskRepository.findById(#id).get().getAuthor().getEmail() == authentication.getName()
+            """;
 
     private final TaskRepository taskRepository;
     private final TaskService taskService;
 
     @Operation(summary = "Get Tasks by Predicate")
     @ApiResponses(@ApiResponse(responseCode = "200", content =
-        @Content(array = @ArraySchema(schema = @Schema(implementation = Task.class))))
+    @Content(array = @ArraySchema(schema = @Schema(implementation = Task.class))))
     )
     @GetMapping
     public Iterable<TaskDto> getFilteredTasks(
             @Parameter(description = "Predicate based on query params")
-            @QuerydslPredicate(root = Task.class) Predicate predicate) {
+            TaskQueryDto predicate, Pageable pageable) {
         BooleanBuilder builder = new BooleanBuilder();
-        Iterable<Task> all = taskRepository.findAll(builder.and(predicate));
-        List<TaskDto> collect1 = StreamSupport.stream(all.spliterator(), false)
+        if (Objects.nonNull(predicate.getTitleCont())) {
+            builder.and(QTask.task.description.eq(predicate.getTitleCont()));
+        }
+        if (Objects.nonNull(predicate.getAssigneeId())) {
+            builder.and(QTask.task.assignee.id.eq(predicate.getAssigneeId()));
+        }
+        if (Objects.nonNull(predicate.getStatus())) {
+            builder.and(QTask.task.taskStatus.slug.eq(predicate.getStatus()));
+        }
+        if (Objects.nonNull(predicate.getLabelId())) {
+            builder.and(QTask.task.labels.any().id.eq(predicate.getLabelId()));
+        }
+        Iterable<Task> tasks = taskRepository.findAll(builder);
+        List<TaskDto> collect1 = StreamSupport.stream(tasks.spliterator(), false)
                 .map(t -> {
-                    Set<String> collect = t.getLabels().stream().map(Label::getName).collect(Collectors.toSet());
-                    return new TaskDto(t.getName(), t.getDescription(), t.getAssignee().getId(), t.getTaskStatus().getName(), collect);
+                    Set<Long> labels = t.getLabels().stream().map(Label::getId).collect(Collectors.toSet());
+                    return new TaskDto(t.getId(), t.getName(), t.getDescription(), t.getId(), t.getAssignee().getId(), t.getTaskStatus().getName(), labels);
                 }).collect(Collectors.toList());
         return collect1;
     }
 
     @Operation(summary = "Get Task by Id")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Task found"),
-        @ApiResponse(responseCode = "404", description = "Task with that id not found")
+            @ApiResponse(responseCode = "200", description = "Task found"),
+            @ApiResponse(responseCode = "404", description = "Task with that id not found")
     })
     @GetMapping(ID)
     public Task getById(@PathVariable final Long id) {
@@ -96,14 +113,14 @@ public class TaskController {
     @PutMapping(ID)
     public Task updateTask(@PathVariable final Long id,
                            @Parameter(schema = @Schema(implementation = TaskDto.class))
-                           @RequestBody @Valid  final TaskDto dto) {
+                           @RequestBody @Valid final TaskDto dto) {
         return taskService.updateTask(id, dto);
     }
 
     @Operation(summary = "Delete Task")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Task deleted"),
-        @ApiResponse(responseCode = "404", description = "Task with that id not found")
+            @ApiResponse(responseCode = "200", description = "Task deleted"),
+            @ApiResponse(responseCode = "404", description = "Task with that id not found")
     })
     @DeleteMapping(ID)
     @PreAuthorize(ONLY_AUTHOR_BY_ID)

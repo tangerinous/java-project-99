@@ -49,7 +49,7 @@ public class Task {
     private User assignee;
 
     @ManyToOne
-    @JoinColumn(name = "taskStatus", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "status", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private TaskStatus taskStatus;
 
     @ManyToMany

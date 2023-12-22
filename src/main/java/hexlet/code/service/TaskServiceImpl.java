@@ -56,13 +56,11 @@ public class TaskServiceImpl implements TaskService {
         final TaskStatus taskStatus = taskStatusRepository.findBySlug(dto.getStatus())
                 .orElse(null);
 
-        final Set<Label> labels = Optional.ofNullable(dto.getLabels())
+        final Set<Label> labels = Optional.ofNullable(dto.getTaskLabelIds())
                 .orElse(Set.of())
                 .stream()
                 .filter(Objects::nonNull)
-                .map(l-> labelRepository.findByName(l))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .map(l -> new Label(l))
                 .collect(Collectors.toSet());
 
         return Task.builder()

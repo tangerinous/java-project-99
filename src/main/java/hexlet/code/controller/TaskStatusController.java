@@ -3,7 +3,9 @@ package hexlet.code.controller;
 import hexlet.code.dto.TaskStatusDto;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
+
 import java.util.List;
+
 import jakarta.validation.Valid;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,14 +42,17 @@ public class TaskStatusController {
     private final TaskStatusRepository taskStatusRepository;
 
     @GetMapping
-    public List<TaskStatus> getAll() {
+    public List<TaskStatus> getAll(@RequestParam(value = "id", required = false) String name) {
+        if (name != null) {
+            return taskStatusRepository.findAllBySlug(name);
+        }
         return taskStatusRepository.findAll();
     }
 
     @Operation(summary = "Get state by Id")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "State found"),
-        @ApiResponse(responseCode = "404", description = "State with that id not found")
+            @ApiResponse(responseCode = "200", description = "State found"),
+            @ApiResponse(responseCode = "404", description = "State with that id not found")
     })
     @GetMapping(ID)
     public TaskStatus getById(@PathVariable final Long id) {

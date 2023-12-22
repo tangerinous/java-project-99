@@ -55,6 +55,7 @@ dependencies {
 			'io.sentry:sentry-spring-boot-starter-jakarta:6.34.0'
 
 	)
+	annotationProcessor('com.querydsl:querydsl-apt:5.0.0:jakarta')
 
 	testImplementation(
 			'org.springframework.security:spring-security-test',
@@ -73,6 +74,13 @@ dependencies {
 			'com.querydsl:querydsl-apt:5.0.0:jakarta',
 			'jakarta.persistence:jakarta.persistence-api:3.1.0'
     )
+}
+sourceSets {
+	generated {
+		java {
+			srcDirs = ['build/generated/sources/annotationProcessor/java/main']
+		}
+	}
 }
 
 tasks.named('test') {
