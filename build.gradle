@@ -1,6 +1,5 @@
 plugins {
 	id 'application'
-	id 'checkstyle'
 	id 'org.springframework.boot' version '3.0.6'
 	id 'io.spring.dependency-management' version '1.1.0'
 	// Плагины для openapi
@@ -76,11 +75,24 @@ dependencies {
     )
 }
 sourceSets {
-	generated {
-		java {
-			srcDirs = ['build/generated/sources/annotationProcessor/java/main']
-		}
+    main {
+        java {
+            srcDirs 'src/main/java', 'build/generated/sources/annotationProcessor/java/main'
+        }
+    }
+}
+
+tasks.register('compileGeneratedJava') {
+	dependsOn tasks.compileJava
+	inputs.files tasks.compileJava
+	outputs.dir 'build/generated/sources/annotationProcessor/java/main'
+	doLast {
+		// Custom logic if needed
 	}
+}
+
+tasks.withType(JavaCompile) {
+	options.annotationProcessorGeneratedSourcesDirectory = file('build/generated/sources/annotationProcessor/java/main')
 }
 
 tasks.named('test') {
@@ -91,3 +103,7 @@ compileJava {
     options.release = 20
     options.encoding = 'UTF-8'
 }
+tasks.named("sentryCollectSourcesJava") {
+	mustRunAfter(tasks.named("compileTestJava"))
+}
+
