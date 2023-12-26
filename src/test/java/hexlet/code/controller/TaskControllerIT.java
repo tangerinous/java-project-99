@@ -15,6 +15,7 @@ import hexlet.code.repository.UserRepository;
 import hexlet.code.utils.TestUtils;
 
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.IntStream;
 
@@ -85,19 +86,25 @@ public class TaskControllerIT {
     }
 
     private TaskDto buildTask(final String name) {
+        long id = new Random().nextInt();
         return new TaskDto(
+                id,
                 name,
                 "test description",
+                id,
                 null,
                 null,
                 Set.of()
         );
     }
 
-    private TaskDto buildTask(final String name, final Long taskStatusId) {
+    private TaskDto buildTask(final String name, final String taskStatusId) {
+        long id = TestUtils.randomNumber();
         return new TaskDto(
+                id,
                 name,
                 "test description",
+                id,
                 null,
                 taskStatusId,
                 Set.of()
@@ -106,7 +113,6 @@ public class TaskControllerIT {
 
     @Test
     public void getAll() throws Exception {
-
         final List<Task> expected = IntStream.range(1, 10)
                 .mapToObj(i -> Task.builder()
                         .author(utils.getUserByEmail(TEST_USERNAME))
@@ -122,7 +128,7 @@ public class TaskControllerIT {
                 .andReturn()
                 .getResponse();
 
-        final List<Task> posts = fromJson(response.getContentAsString(), new TypeReference<>() {
+        final List<TaskDto> posts = fromJson(response.getContentAsString(), new TypeReference<>() {
         });
         assertThat(posts).hasSize(expected.size());
     }
@@ -157,7 +163,7 @@ public class TaskControllerIT {
     public void createTask() throws Exception {
 
         final User user = userRepository.findByEmail(TEST_USERNAME).get();
-
+        long id = TestUtils.randomNumber();
         final TaskStatus taskStatus = taskStatusRepository.save(TaskStatus.builder()
                 .name("task status")
                 .slug("slug")
@@ -168,10 +174,12 @@ public class TaskControllerIT {
         final Label label2 = labelRepository.save(Label.builder().name("label2").build());
 
         final var task = new TaskDto(
+                id,
                 "test task",
                 "test description",
+                TestUtils.randomNumber(),
                 user.getId(),
-                taskStatus.getId(),
+                taskStatus.getName(),
                 Set.of(label1.getId(), label2.getId())
         );
 
@@ -200,12 +208,14 @@ public class TaskControllerIT {
                 .slug("slug")
                 .build()
         );
-
+        Long id = TestUtils.randomNumber();
         final var task = new TaskDto(
+                id,
                 "test task",
                 "test description",
+                TestUtils.randomNumber(),
                 user.getId(),
-                taskStatus.getId(),
+                taskStatus.getName(),
                 Set.of()
         );
 
@@ -217,7 +227,7 @@ public class TaskControllerIT {
         final Task createdTask = fromJson(response.getContentAsString(), new TypeReference<>() {
         });
 
-        final var toUpdate = buildTask("new name", taskStatus.getId());
+        final var toUpdate = buildTask("new name", taskStatus.getSlug());
 
         final var request = put(TASK_CONTROLLER_PATH + ID, createdTask.getId())
                 .content(asJson(toUpdate))
@@ -236,12 +246,14 @@ public class TaskControllerIT {
                 .slug("skug")
                 .build()
         );
-
+        long id = TestUtils.randomNumber();
         final var task = new TaskDto(
+                id,
                 "test name",
                 "test description",
+                TestUtils.randomNumber(),
                 user.getId(),
-                taskStatus.getId(),
+                taskStatus.getName(),
                 Set.of()
         );
 
@@ -255,7 +267,7 @@ public class TaskControllerIT {
                 .andReturn()
                 .getResponse();
 
-        final Iterable<Task> tasks = fromJson(response.getContentAsString(), new TypeReference<>() {
+        final Iterable<TaskDto> tasks = fromJson(response.getContentAsString(), new TypeReference<>() {
         });
 
         assertThat(tasks).hasSize(1);

@@ -82,12 +82,26 @@ public class TaskController {
             builder.and(QTask.task.labels.any().id.eq(predicate.getLabelId()));
         }
         Iterable<Task> tasks = taskRepository.findAll(builder);
-        List<TaskDto> collect1 = StreamSupport.stream(tasks.spliterator(), false)
-                .map(t -> {
-                    Set<Long> labels = t.getLabels().stream().map(Label::getId).collect(Collectors.toSet());
-                    return new TaskDto(t.getId(), t.getName(), t.getDescription(), t.getId(), t.getAssignee().getId(), t.getTaskStatus().getName(), labels);
-                }).collect(Collectors.toList());
-        return collect1;
+        return StreamSupport.stream(tasks.spliterator(), false)
+                .map(TaskController::mapTaskDto).collect(Collectors.toList());
+    }
+
+    private static TaskDto mapTaskDto(Task t) {
+        Set<Long> labelsIds = t.getLabels().stream().map(Label::getId).collect(Collectors.toSet());
+
+        TaskDto taskDto = new TaskDto();
+        taskDto.setId(t.getId());
+        taskDto.setTitle(t.getName());
+        taskDto.setContent(t.getDescription());
+        taskDto.setIndex(t.getId());
+        if (t.getAssignee() != null) {
+            taskDto.setAssigneeId(t.getAssignee().getId());
+        }
+        if (t.getTaskStatus() != null) {
+            taskDto.setStatus(t.getTaskStatus().getName());
+        }
+        taskDto.setTaskLabelIds(labelsIds);
+        return taskDto;
     }
 
     @Operation(summary = "Get Task by Id")

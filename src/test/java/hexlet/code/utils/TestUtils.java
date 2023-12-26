@@ -17,6 +17,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+
+import java.util.Random;
+
 import static hexlet.code.controller.UserController.USER_CONTROLLER_PATH;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -60,6 +63,8 @@ public class TestUtils {
 
     @Autowired
     private LabelRepository labelRepository;
+
+    private static final Random random = new Random();
 
     public void tearDown() {
         taskRepository.deleteAll();
@@ -113,7 +118,9 @@ public class TestUtils {
     public static <T> T fromJson(final String json, final TypeReference<T> to) throws JsonProcessingException {
         return MAPPER.readValue(json, to);
     }
-
+    public static long randomNumber() {
+        return random.nextInt();
+    }
     public User getUserByEmail(final String email) {
         return userRepository.findByEmail(email).get();
     }

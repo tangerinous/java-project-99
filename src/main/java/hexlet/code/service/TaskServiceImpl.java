@@ -51,7 +51,9 @@ public class TaskServiceImpl implements TaskService {
 
     private Task fromDto(final TaskDto dto) {
         final User author = userService.getCurrentUser();
-        final User executor = userRepository.findById(dto.getAssigneeId()).orElse(null);
+        final User executor = Optional.ofNullable(dto.getAssigneeId())
+                .flatMap(userRepository::findById)
+                .orElse(null);
 
         final TaskStatus taskStatus = taskStatusRepository.findBySlug(dto.getStatus())
                 .orElse(null);
