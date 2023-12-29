@@ -65,7 +65,7 @@ public class TaskController {
     @Content(array = @ArraySchema(schema = @Schema(implementation = Task.class))))
     )
     @GetMapping
-    public Iterable<TaskDto> getFilteredTasks(
+    public ResponseEntity<Iterable<TaskDto>> getFilteredTasks(
             @Parameter(description = "Predicate based on query params")
             TaskQueryDto predicate, Pageable pageable) {
         BooleanBuilder builder = new BooleanBuilder();
@@ -82,8 +82,11 @@ public class TaskController {
             builder.and(QTask.task.labels.any().id.eq(predicate.getLabelId()));
         }
         Iterable<Task> tasks = taskRepository.findAll(builder);
-        return StreamSupport.stream(tasks.spliterator(), false)
+        List<TaskDto> result = StreamSupport.stream(tasks.spliterator(), false)
                 .map(TaskController::mapTaskDto).collect(Collectors.toList());
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(result.size()))
+                .body(result);
     }
 
     private static TaskDto mapTaskDto(Task t) {

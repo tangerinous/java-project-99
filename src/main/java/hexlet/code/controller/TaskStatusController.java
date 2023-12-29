@@ -42,11 +42,17 @@ public class TaskStatusController {
     private final TaskStatusRepository taskStatusRepository;
 
     @GetMapping
-    public List<TaskStatus> getAll(@RequestParam(value = "id", required = false) String name) {
+    public ResponseEntity<List<TaskStatus>> getAll(@RequestParam(value = "id", required = false) String name) {
         if (name != null) {
-            return taskStatusRepository.findAllBySlug(name);
+            List<TaskStatus> result = taskStatusRepository.findAllBySlug(name);
+            return ResponseEntity.ok()
+                    .header("X-Total-Count", String.valueOf(result.size()))
+                    .body(result);
         }
-        return taskStatusRepository.findAll();
+        List<TaskStatus> result = taskStatusRepository.findAll();
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(result.size()))
+                .body(result);
     }
 
     @Operation(summary = "Get state by Id")

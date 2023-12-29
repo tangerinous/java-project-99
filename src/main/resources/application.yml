@@ -1,16 +1,37 @@
-server:
-  port: ${PORT:5001}
+---
+logging:
+  level:
+    root: WARN
+    org:
+      springframework:
+        # web: DEBUG
+        security: DEBUG
 
-base-url: /api
+server:
+  port: ${PORT:8080}
+  address: 0.0.0.0
 
 spring:
+  instancio:
+    bean:
+      validation:
+        enabled: true
   application:
     name: taskManager
   jpa:
+    # generate-ddl: true
+    show-sql: true
     hibernate:
       ddl-auto: update
+  output:
+    ansi:
+      enabled: always
 
-  mvc:
-    hiddenmethod:
-      filter:
-        enabled: true
+  # mvc:
+  #   hiddenmethod:
+  #     filter:
+  #       enabled: true
+
+rsa:
+  private-key: classpath:certs/private.pem
+  public-key: classpath:certs/public.pem

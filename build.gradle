@@ -51,8 +51,11 @@ dependencies {
 			'com.rollbar:rollbar-spring-boot3-webmvc:1.10.0',
 			'com.querydsl:querydsl-jpa:5.0.0:jakarta',
 			'javax.xml.bind:jaxb-api:2.3.1',
-			'io.sentry:sentry-spring-boot-starter-jakarta:6.34.0'
-
+			'io.sentry:sentry-spring-boot-starter-jakarta:6.34.0',
+			'org.openapitools:jackson-databind-nullable:0.2.6',
+			'org.springframework.boot:spring-boot-starter-oauth2-resource-server',
+			'org.instancio:instancio-junit:3.3.0',
+			'net.datafaker:datafaker:2.0.1'
 	)
 	annotationProcessor('com.querydsl:querydsl-apt:5.0.0:jakarta')
 
@@ -69,6 +72,11 @@ dependencies {
     )
 
 	annotationProcessor(
+			'org.projectlombok:lombok:1.18.30',
+			'com.querydsl:querydsl-apt:5.0.0:jakarta',
+			'jakarta.persistence:jakarta.persistence-api:3.1.0'
+    )
+	testAnnotationProcessor(
 			'org.projectlombok:lombok:1.18.30',
 			'com.querydsl:querydsl-apt:5.0.0:jakarta',
 			'jakarta.persistence:jakarta.persistence-api:3.1.0'

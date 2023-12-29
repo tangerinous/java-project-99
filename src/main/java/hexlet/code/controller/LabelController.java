@@ -5,7 +5,9 @@ import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 import java.util.List;
+
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -37,14 +39,18 @@ public class LabelController {
     private final LabelRepository labelRepository;
 
     @GetMapping
-    public List<Label> getAllLabels() {
-        return labelRepository.findAll();
+    public ResponseEntity<List<Label>> getAllLabels() {
+        List<Label> result = labelRepository.findAll();
+
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(result.size()))
+                .body(result);
     }
 
     @Operation(summary = "Get label by Id")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Label found"),
-        @ApiResponse(responseCode = "404", description = "Label with that id not found")
+            @ApiResponse(responseCode = "200", description = "Label found"),
+            @ApiResponse(responseCode = "404", description = "Label with that id not found")
     })
     @GetMapping(ID)
     public Label getById(@PathVariable final Long id) {

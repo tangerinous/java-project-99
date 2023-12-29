@@ -56,10 +56,13 @@ public class UserController {
         @Content(schema = @Schema(implementation = User.class)))
     )
     @GetMapping
-    public List<User> getAll() {
-        return userRepository.findAll()
+    public ResponseEntity<List<User>> getAll() {
+        List<User> result = userRepository.findAll()
                 .stream()
                 .toList();
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(result.size()))
+                .body(result);
     }
 
     @ApiResponses(@ApiResponse(responseCode = "200"))

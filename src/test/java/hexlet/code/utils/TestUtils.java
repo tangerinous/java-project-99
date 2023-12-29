@@ -3,7 +3,7 @@ package hexlet.code.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.component.JWTUtility;
+import hexlet.code.util.JWTUtils;
 import hexlet.code.dto.UserDto;
 import hexlet.code.model.User;
 import hexlet.code.repository.LabelRepository;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 public class TestUtils {
     private static final String BEARER = "Bearer ";
 
-    public static final String TEST_USERNAME = "email@email.com";
+    public static final String TEST_USERNAME = "hexlet@example.com";
     public static final String TEST_USERNAME_2 = "email2@email.com";
 
     private final UserDto testRegistrationDto = new UserDto(
@@ -50,7 +50,7 @@ public class TestUtils {
     private UserRepository userRepository;
 
     @Autowired
-    private JWTUtility jwtUtility;
+    private JWTUtils jwtUtils;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -87,7 +87,7 @@ public class TestUtils {
 
     public String buildToken(String email) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-        return jwtUtility.generateToken(userDetails);
+        return jwtUtils.generateToken(userDetails.getUsername());
     }
 
     public ResultActions perform(final MockHttpServletRequestBuilder request, final String byUser) throws Exception {
