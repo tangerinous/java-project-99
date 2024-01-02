@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long>, QuerydslPredicateExecutor<Task> {
-    Optional<Label> findByName(String name);
+    Optional<Task> findByName(String name);
 }
 

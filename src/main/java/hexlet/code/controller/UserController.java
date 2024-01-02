@@ -1,19 +1,14 @@
-package hexlet.code.controller;
+package hexlet.code.controller.api;
 
 import hexlet.code.dto.UserDto;
-import hexlet.code.model.User;
+import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.service.UserService;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.Operation;
-
-import java.util.List;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.api.OpenApiResourceNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,64 +21,67 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import static hexlet.code.controller.UserController.USER_CONTROLLER_PATH;
-import static org.springframework.http.HttpStatus.CREATED;
-
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("${base-url:/api}" + USER_CONTROLLER_PATH)
+@RequestMapping("/api")
 public class UserController {
-    public static final String USER_CONTROLLER_PATH = "/users";
-    public static final String ID = "/{id}";
 
-    private static final String ONLY_OWNER_BY_ID = """
-                @userRepository.findById(#id).get().getEmail() == authentication.name
-            """;
+    @Autowired
+    private UserMapper userMapper;
 
+    @Autowired
     private final UserService userService;
+
+    @Autowired
     private final UserRepository userRepository;
 
-    @Operation(summary = "Create new user")
-    @ApiResponse(responseCode = "201", description = "User created")
-    @PostMapping
-    @ResponseStatus(CREATED)
-    public User registerNew(@RequestBody @Valid final UserDto dto) {
-        return userService.createNewUser(dto);
-    }
+    private static final String ONLY_OWNER_BY_ID = """
+            @userRepository.findById(#id).get().getEmail() == authentication.name
+        """;
 
-    @ApiResponses(@ApiResponse(responseCode = "200", content =
-        @Content(schema = @Schema(implementation = User.class)))
-    )
-    @GetMapping
-    public ResponseEntity<List<User>> getAll() {
-        List<User> result = userRepository.findAll()
-                .stream()
+
+    @GetMapping("/users")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<UserDto>> index() {
+        var users = userRepository.findAll();
+        var result = users.stream()
+                .map(userMapper::map)
                 .toList();
+
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(result.size()))
                 .body(result);
     }
 
-    @ApiResponses(@ApiResponse(responseCode = "200"))
-    @GetMapping(ID)
-    public User getUserById(@PathVariable final Long id) {
-
-
-        return userRepository.findById(id).get();
+    @PostMapping("/users")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDto create(@RequestBody @Valid final UserDto data) {
+        var user = userService.createAndReturnUser(data);
+        return userMapper.map(user);
     }
 
-    @PutMapping(ID)
-    @PreAuthorize(ONLY_OWNER_BY_ID)
-    public User update(@PathVariable final long id, @RequestBody @Valid final UserDto dto) { // TODO Partial Update
-        return userService.updateUser(id, dto);
+    @GetMapping("/users/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto show(@PathVariable final Long id) {
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new OpenApiResourceNotFoundException("Not Found: " + id));
+        return userMapper.map(user);
     }
 
-    @DeleteMapping(ID)
     @PreAuthorize(ONLY_OWNER_BY_ID)
-    public ResponseEntity delete(@PathVariable final long id) {
+    @PutMapping("/users/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto update(@PathVariable final long id, @RequestBody @Valid UserDto data) {
+        var user = userService.updateAndReturnUser(id, data);
+        return userMapper.map(user);
+    }
+
+    @PreAuthorize(ONLY_OWNER_BY_ID)
+    @DeleteMapping("/users/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable final long id) {
         userRepository.deleteById(id);
-        return ResponseEntity.status(204).build();
     }
 }
-

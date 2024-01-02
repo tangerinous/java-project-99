@@ -1,7 +1,5 @@
 package hexlet.code.config;
 
-import hexlet.code.service.UserDetailsServiceImpl;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +18,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
+import hexlet.code.service.UserService;
+import lombok.AllArgsConstructor;
+
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
@@ -32,7 +33,7 @@ public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private UserDetailsServiceImpl userService;
+    private UserService userService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector)

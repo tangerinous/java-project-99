@@ -41,10 +41,6 @@ public class Task {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "author", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
-    private User author;
-
-    @ManyToOne
     @JoinColumn(name = "assignee", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private User assignee;
 

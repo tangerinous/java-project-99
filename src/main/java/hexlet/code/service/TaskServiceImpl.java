@@ -50,7 +50,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private Task fromDto(final TaskDto dto) {
-        final User author = userService.getCurrentUser();
         final User executor = Optional.ofNullable(dto.getAssigneeId())
                 .flatMap(userRepository::findById)
                 .orElse(null);
@@ -66,11 +65,10 @@ public class TaskServiceImpl implements TaskService {
                 .collect(Collectors.toSet());
 
         return Task.builder()
-                .author(author)
                 .assignee(executor)
                 .taskStatus(taskStatus)
                 .labels(labels)
-                .name(dto.getTitle())
+                .name(dto.getName() != null ? dto.getName() : dto.getTitle())
                 .description(dto.getContent())
                 .build();
     }

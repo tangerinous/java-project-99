@@ -35,7 +35,7 @@ public class DataInitializer implements ApplicationRunner {
             userDto.setPassword("qwerty");
             userDto.setFirstName("David");
             userDto.setLastName("David");
-            userService.createNewUser(userDto);
+            userService.createAndReturnUser(userDto);
         }
 
         List<TaskStatus> taskStatuses = taskStatusRepository.findAll();

@@ -18,6 +18,8 @@ public final class TaskDto {
 
     private String content;
 
+    private String name;
+
     private long index;
 
     @JsonProperty("assignee_id")
